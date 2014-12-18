@@ -1,8 +1,29 @@
+/**
+ * @file Exports a stream that deduplicates Document objects, discarding
+ *    duplicates and pushing non-duplicates further downstream.
+ */
+
 'use strict';
 
 var request = require( 'request' );
 var through = require( 'through2' );
 
+/**
+ * Return an address deduplication filter.
+ *
+ * @param {int} [requestBatchSize=50] The number of addresses to buffer into a
+ *    batch before sending it to the duplicator. The higher the number, the
+ *    less time and energy collectively spent in making requests, but the
+ *    bigger the memory consumption buildup.
+ * @param {int} [maxLiveRequests=100] Since the deduper is implemented as a
+ *    standalone server and processes data more slowly than the importer feeds
+ *    it, the stream needs to rate-limit itself. `maxLiveRequests` indicates
+ *    the maximum number of unresolved concurrent requests at any time; when
+ *    that number is hit, the stream will pause reading until the number of
+ *    concurrent requests falls below it.
+ * @return {transform Stream} Removes duplicate addresses from a stream of
+ *    Document objects (the first such address, though, is let through).
+ */
 function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
   var addresses = [];
   var requestBatchSize = requestBatchSize || 50;
@@ -19,6 +40,12 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
   // Number of duplicate addresses detected.
   var duplicateNum = 0;
 
+  /**
+   * @param {array of Document} batch The batch to send to the deduplicator,
+   *    which indicates which objects are duplicates.
+   * @param {transform Stream} downstream The pipeline to push non-duplicates
+   *    into.
+   */
   function sendBatch( batch, downstream ){
     var endpoint = 'http://localhost:5000/addresses/dedupe?batch=1';
 
