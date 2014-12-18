@@ -92,6 +92,12 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
     }
   }
 
+  /**
+   * Store up to `requestBatchSize` incoming addresses in the `addresses`
+   * array, then send them to the de-duplicator via `sendBatch()`.
+   *
+   * @param {Document} address An address coming down the pipeline.
+   */
   function bufferBatch( address, enc, next ){
     addresses.push( address );
     if( addresses.length == requestBatchSize || streamEnded ){
@@ -107,6 +113,11 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
     }
   }
 
+  /**
+   * Indicates that the last `Address` object has passed through the pipeline,
+   * so that `bufferBatch()` can close it after the last `sendBatch()` request
+   * has returned.
+   */
   function signalStreamEnd(  ){
     streamEnded = true;
   }
@@ -114,6 +125,12 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
   return through.obj( bufferBatch, signalStreamEnd );
 };
 
+/**
+ * Remap a Document object to the schema required by the address deduplicator.
+ *
+ * @param {doc} A document ready to be sent to the deduplicator.
+ * @return {object} `doc` mapped to the format required by the deduplicator.
+ */
 function remapDocument( doc ){
   var centroid = doc.getCentroid();
   return {
