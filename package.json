@@ -1,0 +1,28 @@
+{
+  "name": "address-deduplicator-stream",
+  "version": "1.0.1",
+  "description": "A stream for deduplicating a stream of address Documents.",
+  "main": "address_deduplicator_stream.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "request": "2.51.0",
+    "through2": "0.6.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pelias/address-deduplicator-stream.git"
+  },
+  "keywords": [
+    "address",
+    "deduplicator",
+    "pelias-model"
+  ],
+  "author": "mapzen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pelias/address-deduplicator-stream/issues"
+  },
+  "homepage": "https://github.com/pelias/address-deduplicator-stream"
+}
