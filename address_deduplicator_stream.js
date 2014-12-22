@@ -11,11 +11,11 @@ var through = require( 'through2' );
 /**
  * Return an address deduplication filter.
  *
- * @param {int} [requestBatchSize=50] The number of addresses to buffer into a
+ * @param {int} [requestBatchSize=100] The number of addresses to buffer into a
  *    batch before sending it to the duplicator. The higher the number, the
  *    less time and energy collectively spent in making requests, but the
  *    bigger the memory consumption buildup.
- * @param {int} [maxLiveRequests=100] Since the deduper is implemented as a
+ * @param {int} [maxLiveRequests=10] Since the deduper is implemented as a
  *    standalone server and processes data more slowly than the importer feeds
  *    it, the stream needs to rate-limit itself. `maxLiveRequests` indicates
  *    the maximum number of unresolved concurrent requests at any time; when
@@ -26,7 +26,7 @@ var through = require( 'through2' );
  */
 function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
   var addresses = [];
-  var requestBatchSize = requestBatchSize || 50;
+  var requestBatchSize = requestBatchSize || 100;
 
   // Used to close this stream after the input stream dries up and the last
   // live `sendBatch()` request returns.
@@ -35,7 +35,7 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
 
   // Used to rate-limit the requests the stream sends to the deduper.
   var streamPaused = false;
-  var maxLiveRequests = maxLiveRequests || 100;
+  var maxLiveRequests = maxLiveRequests || 10;
 
   // Number of duplicate addresses detected.
   var duplicateNum = 0;
