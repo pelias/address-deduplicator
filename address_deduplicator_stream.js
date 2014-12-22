@@ -7,12 +7,13 @@
 
 var request = require( 'request' );
 var through = require( 'through2' );
+var url = require( 'url' );
 
 /**
  * Return an address deduplication filter.
  *
  * @param {int} [requestBatchSize=100] The number of addresses to buffer into a
- *    batch before sending it to the duplicator. The higher the number, the
+ *    batch before sending it to the deduplicator. The higher the number, the
  *    less time and energy collectively spent in making requests, but the
  *    bigger the memory consumption buildup.
  * @param {int} [maxLiveRequests=10] Since the deduper is implemented as a
@@ -21,10 +22,14 @@ var through = require( 'through2' );
  *    the maximum number of unresolved concurrent requests at any time; when
  *    that number is hit, the stream will pause reading until the number of
  *    concurrent requests falls below it.
+ * @param {string} [serverUrl='http://localhost:5000'] The HTTP base url of
+ *    the address deduplicator server.
  * @return {transform Stream} Removes duplicate addresses from a stream of
  *    Document objects (the first such address, though, is let through).
  */
-function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
+function createDeduplicateStream(
+  requestBatchSize, maxLiveRequests, serverUrl
+){
   var addresses = [];
   var requestBatchSize = requestBatchSize || 100;
 
@@ -39,6 +44,9 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
 
   // Number of duplicate addresses detected.
   var duplicateNum = 0;
+  var serverUrl = url.resolve(
+    serverUrl || 'http://localhost:5000', 'addresses/dedupe?batch=1'
+  );
 
   /**
    * @param {array of Document} batch The batch to send to the deduplicator,
@@ -47,8 +55,6 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
    *    into.
    */
   function sendBatch( batch, downstream ){
-    var endpoint = 'http://localhost:5000/addresses/dedupe?batch=1';
-
     var postData = {
       json: {
         addresses: batch.map( remapDocument )
@@ -84,7 +90,7 @@ function createDeduplicateStream( requestBatchSize, maxLiveRequests ){
         downstream.emit( 'resumeStream' );
       }
     };
-    request.post( endpoint, postData, responseCallback );
+    request.post( serverUrl, postData, responseCallback );
     liveRequests++;
 
     if( liveRequests >= maxLiveRequests ){
