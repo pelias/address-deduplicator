@@ -1,6 +1,6 @@
 {
   "name": "address-deduplicator-stream",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A stream for deduplicating a stream of address Documents.",
   "main": "address_deduplicator_stream.js",
   "scripts": {
