@@ -3,12 +3,10 @@
   "version": "1.0.4",
   "description": "A stream for deduplicating a stream of address Documents.",
   "main": "address_deduplicator_stream.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "dependencies": {
     "request": "2.51.0",
-    "through2": "0.6.3"
+    "through2": "0.6.3",
+    "precommit-hook": "1.0.7"
   },
   "repository": {
     "type": "git",
