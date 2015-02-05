@@ -67,17 +67,17 @@ function createDeduplicateStream(
         console.error(
           "Error: %s\nHTTP Response: %s\nBody: %s\n", err, httpResponse, body
         );
-        return;
       }
-
-      for( var ind = 0; ind < body.addresses.length; ind++ ){
-        var addressResp = body.addresses[ ind ];
-        if( addressResp.dupe ){
-          duplicateNum++;
-        }
-        else {
-          batch[ ind ].setId( addressResp.guid );
-          downstream.push( batch[ ind ] );
+      else {
+        for( var ind = 0; ind < body.addresses.length; ind++ ){
+          var addressResp = body.addresses[ ind ];
+          if( addressResp.dupe ){
+            duplicateNum++;
+          }
+          else {
+            batch[ ind ].setId( addressResp.guid );
+            downstream.push( batch[ ind ] );
+          }
         }
       }
 
