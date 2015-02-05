@@ -30,8 +30,10 @@ var url = require( 'url' );
 function createDeduplicateStream(
   requestBatchSize, maxLiveRequests, serverUrl
 ){
+  /* jshint validthis: true */
+
   var addresses = [];
-  var requestBatchSize = requestBatchSize || 100;
+  requestBatchSize = requestBatchSize || 100;
 
   // Used to close this stream after the input stream dries up and the last
   // live `sendBatch()` request returns.
@@ -40,11 +42,11 @@ function createDeduplicateStream(
 
   // Used to rate-limit the requests the stream sends to the deduper.
   var streamPaused = false;
-  var maxLiveRequests = maxLiveRequests || 10;
+  maxLiveRequests = maxLiveRequests || 10;
 
   // Number of duplicate addresses detected.
   var duplicateNum = 0;
-  var serverUrl = url.resolve(
+  serverUrl = url.resolve(
     serverUrl || 'http://localhost:5000', 'addresses/dedupe?batch=1'
   );
 
@@ -65,7 +67,7 @@ function createDeduplicateStream(
       liveRequests--;
       if( err || body.addresses === undefined ){
         console.error(
-          "Error: %s\nHTTP Response: %s\nBody: %s\n", err, httpResponse, body
+          'Error: %s\nHTTP Response: %s\nBody: %s\n', err, httpResponse, body
         );
       }
       else {
@@ -81,7 +83,7 @@ function createDeduplicateStream(
         }
       }
 
-      if( liveRequests == 0 && streamEnded ){
+      if( liveRequests === 0 && streamEnded ){
         downstream.push( null );
       }
 
@@ -89,7 +91,7 @@ function createDeduplicateStream(
         streamPaused = false;
         downstream.emit( 'resumeStream' );
       }
-    };
+    }
     request.post( serverUrl, postData, responseCallback );
     liveRequests++;
 
@@ -106,7 +108,7 @@ function createDeduplicateStream(
    */
   function bufferBatch( address, enc, next ){
     addresses.push( address );
-    if( addresses.length == requestBatchSize || streamEnded ){
+    if( addresses.length === requestBatchSize || streamEnded ){
       sendBatch( addresses, this );
       addresses = [];
     }
@@ -129,7 +131,7 @@ function createDeduplicateStream(
   }
 
   return through.obj( bufferBatch, signalStreamEnd );
-};
+}
 
 /**
  * Remap a Document object to the schema required by the address deduplicator.
