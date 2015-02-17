@@ -1,10 +1,10 @@
-# address deduplicator stream
+# address deduplicator
 A stream that performs address deduplication using the robust
 [OpenVenues deduplicator](https://github.com/openvenues/address_deduper); note that it must be separately installed and
 running.
 
 ## API
-`address-deduplicator-stream` exports a single function:
+`pelias-address-deduplicator` exports a single function:
 `createDeduplicateStream( requestBatchSize, maxLiveRequests, serverUrl )`, which accepts three optional arguments:
 
   * `requestBatchSize` (default: `100`): The number of addresses to buffer into a

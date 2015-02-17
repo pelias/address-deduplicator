@@ -1,7 +1,7 @@
 {
-  "name": "address-deduplicator-stream",
+  "name": "pelias-address-deduplicator",
   "version": "1.0.4",
-  "description": "A stream for deduplicating a stream of address Documents.",
+  "description": "A stream for deduplicating a stream of address objects.",
   "main": "address_deduplicator_stream.js",
   "dependencies": {
     "request": "2.51.0",
