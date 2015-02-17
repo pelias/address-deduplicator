@@ -6,7 +6,8 @@
   "dependencies": {
     "request": "2.51.0",
     "through2": "0.6.3",
-    "precommit-hook": "1.0.7"
+    "precommit-hook": "1.0.7",
+    "pelias-logger": "^0.x.x"
   },
   "repository": {
     "type": "git",

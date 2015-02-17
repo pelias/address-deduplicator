@@ -8,6 +8,7 @@
 var request = require( 'request' );
 var through = require( 'through2' );
 var url = require( 'url' );
+var logger = require( 'pelias-logger' ).get( 'address-deduplicator' );
 
 /**
  * Return an address deduplication filter.
@@ -45,10 +46,21 @@ function createDeduplicateStream(
   maxLiveRequests = maxLiveRequests || 10;
 
   // Number of duplicate addresses detected.
-  var duplicateNum = 0;
   serverUrl = url.resolve(
     serverUrl || 'http://localhost:5000', 'addresses/dedupe?batch=1'
   );
+
+  // Configure periodic statistics logging.
+  var stats = {
+    total: 0,
+    duplicates: 0,
+    uniques: 0
+  };
+
+  var intervalId = setInterval( function (  ){
+    stats.uniques = stats.total - stats.duplicates;
+    logger.verbose( stats );
+  }, 1e4);
 
   /**
    * @param {array of Document} batch The batch to send to the deduplicator,
@@ -74,7 +86,7 @@ function createDeduplicateStream(
         for( var ind = 0; ind < body.addresses.length; ind++ ){
           var addressResp = body.addresses[ ind ];
           if( addressResp.dupe ){
-            duplicateNum++;
+            stats.duplicates++;
           }
           else {
             batch[ ind ].setId( addressResp.guid );
@@ -84,6 +96,8 @@ function createDeduplicateStream(
       }
 
       if( liveRequests === 0 && streamEnded ){
+        clearInterval( intervalId );
+        logger.info( 'Closing the deduplicator stream.' );
         downstream.push( null );
       }
 
@@ -108,6 +122,7 @@ function createDeduplicateStream(
    */
   function bufferBatch( address, enc, next ){
     addresses.push( address );
+    stats.total++;
     if( addresses.length === requestBatchSize || streamEnded ){
       sendBatch( addresses, this );
       addresses = [];
