@@ -13,11 +13,11 @@ var logger = require( 'pelias-logger' ).get( 'address-deduplicator' );
 /**
  * Return an address deduplication filter.
  *
- * @param {int} [requestBatchSize=100] The number of addresses to buffer into a
+ * @param {int} [requestBatchSize=10000] The number of addresses to buffer into a
  *    batch before sending it to the deduplicator. The higher the number, the
  *    less time and energy collectively spent in making requests, but the
  *    bigger the memory consumption buildup.
- * @param {int} [maxLiveRequests=10] Since the deduper is implemented as a
+ * @param {int} [maxLiveRequests=4] Since the deduper is implemented as a
  *    standalone server and processes data more slowly than the importer feeds
  *    it, the stream needs to rate-limit itself. `maxLiveRequests` indicates
  *    the maximum number of unresolved concurrent requests at any time; when
@@ -34,7 +34,7 @@ function createDeduplicateStream(
   /* jshint validthis: true */
 
   var addresses = [];
-  requestBatchSize = requestBatchSize || 100;
+  requestBatchSize = requestBatchSize || 10000;
 
   // Used to close this stream after the input stream dries up and the last
   // live `sendBatch()` request returns.
@@ -43,7 +43,7 @@ function createDeduplicateStream(
 
   // Used to rate-limit the requests the stream sends to the deduper.
   var streamPaused = false;
-  maxLiveRequests = maxLiveRequests || 10;
+  maxLiveRequests = maxLiveRequests || 4;
 
   // Number of duplicate addresses detected.
   serverUrl = url.resolve(

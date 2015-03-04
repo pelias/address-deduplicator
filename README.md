@@ -7,11 +7,11 @@ running.
 `pelias-address-deduplicator` exports a single function:
 `createDeduplicateStream( requestBatchSize, maxLiveRequests, serverUrl )`, which accepts three optional arguments:
 
-  * `requestBatchSize` (default: `100`): The number of addresses to buffer into a
+  * `requestBatchSize` (default: `10000`): The number of addresses to buffer into a
     batch before sending it to the deduplicator. The higher the number, the
     less time and energy collectively spent in making requests, but the
     bigger the memory consumption buildup.
-  * `maxLiveRequests` (default: `10`): Since the deduper is implemented as a
+  * `maxLiveRequests` (default: `4`): Since the deduper is implemented as a
     standalone server and processes data more slowly than the importer feeds
     it, the stream needs to rate-limit itself. `maxLiveRequests` indicates
     the maximum number of unresolved concurrent requests at any time; when
