@@ -10,6 +10,10 @@ var through = require( 'through2' );
 var url = require( 'url' );
 var logger = require( 'pelias-logger' ).get( 'address-deduplicator' );
 
+function getTimeMs(){
+  return new Date().getTime();
+}
+
 /**
  * Return an address deduplication filter.
  *
@@ -54,8 +58,11 @@ function createDeduplicateStream(
   var stats = {
     total: 0,
     duplicates: 0,
-    uniques: 0
+    uniques: 0,
+    timeSpentPaused: 0
   };
+
+  var pauseTime;
 
   var intervalId = setInterval( function (  ){
     stats.uniques = stats.total - stats.duplicates;
@@ -102,6 +109,7 @@ function createDeduplicateStream(
       }
 
       if( liveRequests < maxLiveRequests && streamPaused ){
+        stats.timeSpentPaused += getTimeMs() - pauseTime;
         streamPaused = false;
         downstream.emit( 'resumeStream' );
       }
@@ -110,6 +118,7 @@ function createDeduplicateStream(
     liveRequests++;
 
     if( liveRequests >= maxLiveRequests ){
+      pauseTime = getTimeMs();
       streamPaused = true;
     }
   }
@@ -141,8 +150,9 @@ function createDeduplicateStream(
    * so that `bufferBatch()` can close it after the last `sendBatch()` request
    * has returned.
    */
-  function signalStreamEnd(  ){
+  function signalStreamEnd(){
     streamEnded = true;
+    sendBatch( addresses, this );
   }
 
   return through.obj( bufferBatch, signalStreamEnd );
