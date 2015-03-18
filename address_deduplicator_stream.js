@@ -65,7 +65,6 @@ function createDeduplicateStream(
   var pauseTime;
 
   var intervalId = setInterval( function (  ){
-    stats.uniques = stats.total - stats.duplicates;
     logger.verbose( stats );
   }, 1e4);
 
@@ -96,6 +95,7 @@ function createDeduplicateStream(
             stats.duplicates++;
           }
           else {
+            stats.uniques++;
             batch[ ind ].setId( addressResp.guid );
             downstream.push( batch[ ind ] );
           }
