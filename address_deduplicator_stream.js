@@ -38,7 +38,7 @@ function createDeduplicateStream(
   /* jshint validthis: true */
 
   var addresses = [];
-  requestBatchSize = requestBatchSize || 10000;
+  requestBatchSize = requestBatchSize || 1000;
 
   // Used to close this stream after the input stream dries up and the last
   // live `sendBatch()` request returns.
@@ -84,7 +84,7 @@ function createDeduplicateStream(
     function responseCallback( err, httpResponse, body ){
       liveRequests--;
       if( err || body.addresses === undefined ){
-        console.error(
+        logger.error(
           'Error: %s\nHTTP Response: %s\nBody: %s\n', err, httpResponse, body
         );
       }
