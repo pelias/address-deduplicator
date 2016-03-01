@@ -25,7 +25,9 @@
   "homepage": "https://github.com/pelias/address-deduplicator-stream",
   "scripts": {
     "lint": "jshint .",
-    "validate": "npm ls"
+    "validate": "npm ls",
+	"units": "node test/units.js",
+	"test": "npm run units"
   },
   "pre-commit": [
     "lint",
