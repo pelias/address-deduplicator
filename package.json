@@ -4,7 +4,7 @@
   "description": "A stream for deduplicating a stream of address objects.",
   "main": "address_deduplicator_stream.js",
   "dependencies": {
-    "request": "2.71.0",
+    "request": "2.72.0",
     "through2": "2.0.1",
     "pelias-logger": "^0.x.x"
   },
