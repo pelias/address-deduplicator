@@ -6,7 +6,7 @@
   "dependencies": {
     "request": "2.72.0",
     "through2": "2.0.1",
-    "pelias-logger": "^0.x.x"
+    "pelias-logger": "0.0.8"
   },
   "repository": {
     "type": "git",
