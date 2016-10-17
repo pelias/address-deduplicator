@@ -3,6 +3,9 @@
   "version": "1.1.0",
   "description": "A stream for deduplicating a stream of address objects.",
   "main": "address_deduplicator_stream.js",
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "dependencies": {
     "request": "^2.74.0",
     "through2": "2.0.1",
