@@ -1,4 +1,6 @@
 # address deduplicator
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/pelias/address-deduplicator.svg)](https://greenkeeper.io/)
 A stream that performs address deduplication using the robust
 [OpenVenues deduplicator](https://github.com/openvenues/address_deduper); note that it must be separately installed and
 running.
