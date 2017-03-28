@@ -32,7 +32,7 @@
     "units": "node test/units.js",
     "test": "npm run units",
     "check-dependencies": "node_modules/.bin/npm-check --production",
-    "travis": "npm run check-dependencies && undefined"
+    "travis": "npm run check-dependencies && npm test"
   },
   "pre-commit": [
     "lint",
