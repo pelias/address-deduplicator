@@ -30,14 +30,18 @@
     "lint": "jshint .",
     "validate": "npm ls",
     "units": "node test/units.js",
-    "test": "npm run units"
+    "test": "npm run units",
+    "check-dependencies": "node_modules/.bin/npm-check --production",
+    "travis": "npm run check-dependencies && npm test"
   },
   "pre-commit": [
     "lint",
     "validate",
-    "test"
+    "test",
+    "check-dependencies"
   ],
   "devDependencies": {
+    "npm-check": "^5.4.0",
     "precommit-hook": "^3.0.0"
   }
 }
