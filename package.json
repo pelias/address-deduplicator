@@ -41,7 +41,7 @@
     "check-dependencies"
   ],
   "devDependencies": {
-    "npm-check": "^5.4.0",
+    "npm-check": "git://github.com/orangejulius/npm-check.git#disable-update-check",
     "precommit-hook": "^3.0.0"
   }
 }
