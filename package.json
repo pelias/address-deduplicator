@@ -9,7 +9,7 @@
   "dependencies": {
     "request": "^2.74.0",
     "through2": "^2.0.3",
-    "pelias-logger": "0.2.1"
+    "pelias-logger": "0.3.0"
   },
   "repository": {
     "type": "git",
